@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Equipo en Vehículo: {{ equipo_vehiculo.equipo.nombre_equipo }}</title>
+    {% load static %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 120px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .form-column {
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], select, input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button i {
+            margin-right: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a.btn-secondary {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+
+        a.btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .details-column {
+            width: 50%;
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .details-column h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .details-section {
+            margin-bottom: 15px;
+        }
+
+        .details-section p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .details-section strong {
+            font-weight: 500;
+        }
+
+        .details-section i {
+            margin-right: 8px;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{% static 'images/Logo5.png' %}" alt="Logo de la Empresa">
+    </div>
+
+    <div class="container">
+        <div class="form-column">
+            <h1>Editar Equipo en Vehículo: {{ equipo_vehiculo.equipo.nombre_equipo }}</h1>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="nombre_equipo_generalizado">Nombre equipo generalizado:</label>
+                    <input type="text" id="nombre_equipo_generalizado" name="nombre_equipo_generalizado" value="{{ equipo_vehiculo.equipo.nombre_equipo_generalizado }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_instalacion">Fecha de Instalación:</label>
+                    <input type="date" id="fecha_instalacion" name="fecha_instalacion" value="{{ equipo_vehiculo.fecha_instalacion|date:'Y-m-d' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_vinculacion">Fecha de Vinculación:</label>
+                    <input type="date" id="fecha_vinculacion" name="fecha_vinculacion" value="{{ equipo_vehiculo.fecha_vinculacion|date:'Y-m-d' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_inicio_operacion">Fecha de Inicio de Operación:</label>
+                    <input type="date" id="fecha_inicio_operacion" name="fecha_inicio_operacion" value="{{ equipo_vehiculo.fecha_inicio_operacion|date:'Y-m-d' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="estado">Estado:</label>
+                    <select id="estado" name="estado">
+                        <option value="">Seleccione un Estado</option>
+                        {% for estado in estados %}
+                            <option value="{{ estado.id }}" {% if equipo_vehiculo.estado == estado.id %}selected{% endif %}>
+                                {{ estado.nombre_estado }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo_its">Tipo ITS:</label>
+                    <select id="tipo_its" name="tipo_its">
+                        <option value="">Seleccione Tipo ITS</option>
+                        {% for tipo_its in tipos_its %}
+                            <option value="{{ tipo_its.id }}" {% if equipo_vehiculo.equipo.tipo_its_id == tipo_its.id %}selected{% endif %}>
+                                {{ tipo_its.nombre_tipo_its }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo_equipo">Tipo Equipo:</label>
+                    <select id="tipo_equipo" name="tipo_equipo">
+                        <option value="">Seleccione Tipo Equipo</option>
+                        {% for tipo_equipo in tipos_equipos %}
+                            <option value="{{ tipo_equipo.id }}" {% if equipo_vehiculo.equipo.tipo_equipo_id == tipo_equipo.id %}selected{% endif %}>
+                                {{ tipo_equipo.nombre_tipo_equipo }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="equipo">Equipo:</label>
+                    <select id="equipo" name="equipo">
+                        <option value="">Seleccione Equipo</option>
+                        {% for equipo in equipos %}
+                            <option value="{{ equipo.id }}" {% if equipo_vehiculo.equipo_id == equipo.id %}selected{% endif %}>
+                                {{ equipo.nombre_equipo }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="marca">Marca:</label>
+                    <select id="marca" name="marca">
+                        <option value="">Seleccione una Marca</option>
+                        {% for marca in marcas %}
+                            <option value="{{ marca.id }}" {% if equipo_vehiculo.equipo.marca_id == marca.id %}selected{% endif %}>
+                                {{ marca.nombre_marca }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn" style="background-color: #007bff;"><i class="fas fa-save"></i> Guardar Cambios</button>
+                    <a href="{% url 'consulta_inventario' %}" class="btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Columna de detalles solo visualización -->
+        <div class="details-column">
+            <h2>Detalles del equipo</h2>
+
+            <div class="details-section">
+                <p><i class="fas fa-barcode icono"></i><strong>Serial:</strong> {{ serial }}</p>
+                <p><i class="fas fa-bus-alt icono"></i><strong>ID Bus:</strong> {{ equipo_vehiculo.vehiculo.idbus }}</p>
+                <p><i class="fas fa-id-badge icono"></i><strong>Placa:</strong> {{ equipo_vehiculo.vehiculo.placa }}</p>
+                <p><i class="fas fa-shapes icono"></i><strong>Tipología:</strong> {{ equipo_vehiculo.vehiculo.tipologia.tipobus }}</p>
+                <p><i class="fas fa-users icono"></i><strong>Operador:</strong> {{ equipo_vehiculo.vehiculo.operador.nombre_operador }}</p>
+                <p><i class="fas fa-industry icono"></i><strong>Proveedor:</strong> {{ equipo_vehiculo.vehiculo.operador.proveedor.nombre_proveedor }}</p>
+            </div>
+
+            <div class="details-section">
+                <p><i class="fas fa-cogs icono"></i><strong>Tipo ITS:</strong> {{ equipo_vehiculo.equipo.tipo_its.nombre_tipo_its }}</p>
+                <p><i class="fas fa-cogs icono"></i><strong>Tipo Equipo:</strong> {{ equipo_vehiculo.equipo.tipo_equipo.nombre_tipo_equipo }}</p>
+                <p><i class="fas fa-tools icono"></i><strong>Equipo:</strong> {{ equipo_vehiculo.equipo.nombre_equipo }}</p>
+                <p><i class="fas fa-tag icono"></i><strong>Marca:</strong> {{ equipo_vehiculo.equipo.marca.nombre_marca }}</p>
+            </div>
+
+            <div class="details-section">
+                <p><i class="fas fa-calendar-alt icono"></i><strong>Fecha de Instalación:</strong> {{ equipo_vehiculo.fecha_instalacion|date:'d/m/Y' }}</p>
+                <p><i class="fas fa-calendar-alt icono"></i><strong>Fecha de Vinculación:</strong> {{ equipo_vehiculo.fecha_vinculacion|date:'d/m/Y' }}</p>
+                <p><i class="fas fa-calendar-alt icono"></i><strong>Fecha de Inicio de Operación:</strong> {{ equipo_vehiculo.fecha_inicio_operacion|date:'d/m/Y' }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

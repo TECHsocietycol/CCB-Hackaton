@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Locales - Find my Business</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome para íconos -->
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 120px;
+        }
+
+        .summary {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .panel-filtros {
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .filters input, .filters select, .filters button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #aaa;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .filters input:focus, .filters select:focus {
+            border-color: #606060;
+            box-shadow: 0 0 5px rgba(60, 60, 60, 0.2);
+        }
+
+        .filters button {
+            background-color: #606060;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .filters button:hover {
+            background-color: #404040;
+            transform: translateY(-2px);
+        }
+
+        .btn-limpiar {
+            background-color: #888;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-limpiar:hover {
+            background-color: #666;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #606060;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e6e6e6;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #606060;
+            color: white;
+            border-radius: 0 0 10px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{% static 'images/Logo6.jpeg' %}" alt="Logo Find My Business" class="logo">
+        <h1>Consulta de Locales</h1>
+        <div class="summary">Consulta inmuebles en Bogotá y encuentra el mejor local para tu negocio.</div>
+
+        <div class="panel-filtros">
+            <form method="GET" action="">
+                <div class="filters">
+                    <input type="number" name="precio_min" placeholder="Precio Mínimo" value="{{ request.GET.precio_min }}">
+                    <input type="number" name="precio_max" placeholder="Precio Máximo" value="{{ request.GET.precio_max }}">
+                    <input type="number" name="area_min" placeholder="Área Mínima (m²)" value="{{ request.GET.area_min }}">
+                    <input type="number" name="area_max" placeholder="Área Máxima (m²)" value="{{ request.GET.area_max }}">
+                    <input type="text" name="localidad" placeholder="Buscar por Localidad" value="{{ request.GET.localidad }}">
+                    <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+                    <a href="{% url 'consultar_locales' %}" class="btn-limpiar"><i class="fas fa-redo"></i> Limpiar Filtros</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Precio</th>
+                        <th>Área (m²)</th>
+                        <th>Localidad</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for local in locales %}
+                    <tr>
+                        <td>{{ local.titulo }}</td>
+                        <td>{{ local.precio }}</td>
+                        <td>{{ local.area }}</td>
+                        <td>{{ local.localidad }}</td>
+                        <td>{{ local.descripcion }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No se encontraron locales con los criterios de búsqueda.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 Find My Business - Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

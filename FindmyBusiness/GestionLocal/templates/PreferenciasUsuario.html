@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Alertas</title>
+    <style>
+        /* Estilos para la ventana de alertas */
+        .alert-container {
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .alert {
+            margin-bottom: 10px;
+        }
+
+        .label-duplicado {
+            background-color: #ff9999; /* Rojo */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .label-cercano {
+            background-color: #ffcc66; /* Amarillo */
+            color: black;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .label-problema-etiquetado {
+            background-color: #3399ff; /* Azul */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* Estilos para los botones */
+        .btn {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 10px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Contenedor para los botones */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor para los botones en la parte superior -->
+    <div class="button-container">
+        <a href="/" class="btn">Regresar</a>
+        <button class="btn" onclick="window.print()">Imprimir Reporte</button>
+    </div>
+
+    <div class="alert-container">
+        <h2>Alertas</h2>
+
+        <!-- Datos de ejemplo con etiquetas aleatorias -->
+        <div class="alert">
+            <strong>ID:</strong> 1592 <br>
+            <strong>Nombre:</strong> EMASIVO 10 <br>
+            <strong>Descripción:</strong> TARJETA PCB <br>
+            <strong>Fecha de Vencimiento:</strong> 14/07/2022 <br>
+            <span class="label-duplicado">Duplicado</span>
+        </div>
+        
+        <div class="alert">
+            <strong>ID:</strong> 61 <br>
+            <strong>Nombre:</strong> EMasivo10 <br>
+            <strong>Descripción:</strong> Antena LTE Router <br>
+            <strong>Fecha de Vencimiento:</strong> 5/08/2022 <br>
+            <span class="label-duplicado">Duplicado</span>
+        </div>
+        
+        <div class="alert">
+            <strong>ID:</strong> 83 <br>
+            <strong>Nombre:</strong> #N/A <br>
+            <strong>Descripción:</strong> Cámara Conductor <br>
+            <strong>Fecha de Vencimiento:</strong> 31/03/2023 <br>
+            <span class="label-duplicado">Duplicado</span>
+        </div>
+        
+        <div class="alert">
+            <strong>ID:</strong> 781 <br>
+            <strong>Nombre:</strong> Gran Américas Usme <br>
+            <strong>Descripción:</strong> ROUTER <br>
+            <strong>Fecha de Vencimiento:</strong> 15/05/2024 <br>
+            <span class="label-cercano">Cercano a cambio</span>
+        </div>
+        
+        <div class="alert">
+            <strong>ID:</strong> 390 <br>
+            <strong>Nombre:</strong> ZMO FONTIBON V <br>
+            <strong>Descripción:</strong> Contador de pasajeros P2 <br>
+            <strong>Fecha de Vencimiento:</strong> 16/07/2022 <br>
+            <span class="label-duplicado">Duplicado</span>
+        </div>
+
+        <div class="alert">
+            <strong>ID:</strong> 512 <br>
+            <strong>Nombre:</strong> Estación Norte <br>
+            <strong>Descripción:</strong> Sistema de cámaras <br>
+            <strong>Fecha de Vencimiento:</strong> 20/11/2026 <br>
+            <span class="label-problema-etiquetado">Problema de etiquetado</span>
+        </div>
+        
+        <div class="alert">
+            <strong>ID:</strong> 241 <br>
+            <strong>Nombre:</strong> ZMO FONTIBON V <br>
+            <strong>Descripción:</strong> Dispositivo Central STS <br>
+            <strong>Fecha de Vencimiento:</strong> 18/04/2024 <br>
+            <span class="label-cercano">Cercano a cambio</span>
+        </div>
+        
+        <div class="alert">
+            <strong>ID:</strong> 63 <br>
+            <strong>Nombre:</strong> EMasivo10 <br>
+            <strong>Descripción:</strong> Antena LTE Router <br>
+            <strong>Fecha de Vencimiento:</strong> 12/08/2022 <br>
+            <span class="label-duplicado">Duplicado</span>
+        </div>
+
+        <div class="alert">
+            <strong>ID:</strong> 154 <br>
+            <strong>Nombre:</strong> Terminal de Prueba <br>
+            <strong>Descripción:</strong> Terminal de Prueba <br>
+            <strong>Fecha de Vencimiento:</strong> 23/09/2022 <br>
+            <span class="label-duplicado">Duplicado</span>
+        </div>
+
+        <div class="alert">
+            <strong>ID:</strong> 248 <br>
+            <strong>Nombre:</strong> ZMO Usme <br>
+            <strong>Descripción:</strong> Puerta <br>
+            <strong>Fecha de Vencimiento:</strong> 10/10/2022 <br>
+            <span class="label-duplicado">Duplicado</span>
+        </div>
+        
+        <!-- Nuevas alertas con "Problema de etiquetado" -->
+        <div class="alert">
+            <strong>ID:</strong> 329 <br>
+            <strong>Nombre:</strong> Central Administrativa <br>
+            <strong>Descripción:</strong> Monitor de Conductor <br>
+            <strong>Fecha de Vencimiento:</strong> 15/12/2024 <br>
+            <span class="label-problema-etiquetado">Problema de etiquetado</span>
+        </div>
+
+        <div class="alert">
+            <strong>ID:</strong> 419 <br>
+            <strong>Nombre:</strong> Emisión Sur <br>
+            <strong>Descripción:</strong> Controlador Central <br>
+            <strong>Fecha de Vencimiento:</strong> 08/07/2025 <br>
+            <span class="label-problema-etiquetado">Problema de etiquetado</span>
+        </div>
+
+
+
+    </div>
+</body>
+</html>

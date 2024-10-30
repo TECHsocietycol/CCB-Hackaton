@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Inventario</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome para íconos -->
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 100px;
+        }
+
+        .summary {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #777;
+        }
+
+        .panel-filtros {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .filters input, .filters select, .filters button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .filters input:focus, .filters select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+
+        .filters button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .filters button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-regresar, .btn-limpiar {
+            background-color: #6c757d;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-regresar:hover, .btn-limpiar:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .btn-cerrar {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-cerrar:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-columns {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal-column {
+            width: 48%;
+        }
+
+        .modal-column p i {
+            margin-right: 8px;
+            color: #007bff;
+        }
+    </style>
+
+    <script>
+        // Función para mostrar el modal con toda la información completa
+        function mostrarDetalles(equipoData) {
+            var modal = document.getElementById('myModal');
+            var modalContent = document.getElementById('modal-content');
+            modal.style.display = "block";
+
+            // Crear el contenido del modal con la información adicional y los íconos
+            var details = `
+                <h2>Detalles del equipo</h2>
+                <div class="modal-columns">
+                    <div class="modal-column">
+                        <p><i class="fas fa-barcode"></i><strong>Serial:</strong> ${equipoData.serial || 'N/A'}</p>
+                        <p><i class="fas fa-bus-alt"></i><strong>ID Bus:</strong> ${equipoData.idbus || 'N/A'}</p>
+                        <p><i class="fas fa-id-badge"></i><strong>Placa:</strong> ${equipoData.placa || 'N/A'}</p>
+                        <p><i class="fas fa-shapes"></i><strong>Tipología:</strong> ${equipoData.tipologia || 'N/A'}</p>
+                        <p><i class="fas fa-users"></i><strong>Operador:</strong> ${equipoData.operador || 'N/A'}</p>
+                        <p><i class="fas fa-industry"></i><strong>Proveedor:</strong> ${equipoData.proveedor || 'N/A'}</p>
+                        <p><i class="fas fa-cogs"></i><strong>Tipo ITS:</strong> ${equipoData.tipo_its || 'N/A'}</p>
+                        <p><i class="fas fa-tools"></i><strong>Tipo Equipo:</strong> ${equipoData.tipo_equipo || 'N/A'}</p>
+                        <p><i class="fas fa-tag"></i><strong>Equipo:</strong> ${equipoData.equipo || 'N/A'}</p>
+                        <p><i class="fas fa-trademark"></i><strong>Marca:</strong> ${equipoData.marca || 'N/A'}</p>
+                    </div>
+                    <div class="modal-column">
+                        <p><i class="fas fa-calendar-alt"></i><strong>Fecha de Instalación:</strong> ${equipoData.fecha_instalacion || 'N/A'}</p>
+                        <p><i class="fas fa-calendar-check"></i><strong>Fecha de Vinculación:</strong> ${equipoData.fecha_vinculacion || 'N/A'}</p>
+                        <p><i class="fas fa-calendar-day"></i><strong>Fecha de Inicio de Operación:</strong> ${equipoData.fecha_inicio_operacion || 'N/A'}</p>
+                        <p><i class="fas fa-hourglass-half"></i><strong>Fecha Fin de Vida Útil:</strong> ${equipoData.fecha_fin_vu || 'N/A'}</p>
+                        <p><i class="fas fa-clock"></i><strong>Tiempo en Operación a Hoy:</strong> ${equipoData.tiempo_operacion_hoy || 'N/A'} días</p>
+                        <p><i class="fas fa-hourglass-end"></i><strong>Días Restantes de Operación:</strong> ${equipoData.dias_restantes_operacion || 'N/A'} días</p>
+                        <p><i class="fas fa-tachometer-alt"></i><strong>% Avance a Hoy:</strong> ${equipoData.porcentaje_avance_hoy || 'N/A'}%</p>
+                    </div>
+                </div>
+                <button class="btn-cerrar" onclick="cerrarModal()">Cerrar</button>
+            `;
+
+            modalContent.innerHTML = details;
+        }
+
+        function cerrarModal() {
+            document.getElementById('myModal').style.display = "none";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="{% static 'images/Logo5.png' %}" alt="Logo de la empresa" class="logo">
+        <h1>Consulta de Inventario</h1>
+        <div class="summary">Mostrando {{ equipos.count }} registros (de un máximo de 200).</div>
+
+        <div class="filters" style="display: flex; gap: 10px; justify-content: center;">
+            <form method="GET" action="" style="display: flex; gap: 10px;">
+                <input type="text" name="buscar_serial" placeholder="Buscar por Serial" value="{{ request.GET.buscar_serial }}">
+                <input type="text" name="buscar_id_bus" placeholder="Buscar por ID Bus" value="{{ request.GET.buscar_id_bus }}">
+                <button type="submit" style="align-self: flex-end;"><i class="fas fa-search"></i> Buscar</button>
+            </form>
+        </div>
+
+        <div class="panel-filtros">
+            <form method="GET" action="">
+                <div class="filters">
+                    <select name="filtrar_tipologia">
+                        <option value="">Filtrar por Tipología</option>
+                        {% for tipologia in tipologias %}
+                            <option value="{{ tipologia.id }}" {% if request.GET.filtrar_tipologia == tipologia.id|stringformat:"s" %}selected{% endif %}>
+                                {{ tipologia.tipobus }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="filtrar_operador">
+                        <option value="">Filtrar por Operador</option>
+                        {% for operador in operadores %}
+                            <option value="{{ operador.id }}" {% if request.GET.filtrar_operador == operador.id|stringformat:"s" %}selected{% endif %}>
+                                {{ operador.nombre_operador }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="filtrar_proveedor">
+                        <option value="">Filtrar por Proveedor</option>
+                        {% for proveedor in proveedores %}
+                            <option value="{{ proveedor.id }}" {% if request.GET.filtrar_proveedor == proveedor.id|stringformat:"s" %}selected{% endif %}>
+                                {{ proveedor.nombre_proveedor }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="filtrar_tipo_its">
+                        <option value="">Filtrar por Tipo ITS</option>
+                        {% for tipo_its in tipos_its %}
+                            <option value="{{ tipo_its.id }}" {% if request.GET.filtrar_tipo_its == tipo_its.id|stringformat:"s" %}selected{% endif %}>
+                                {{ tipo_its.nombre_tipo_its }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="filtrar_tipo_equipo">
+                        <option value="">Filtrar por Tipo Equipo</option>
+                        {% for tipo_equipo in tipos_equipos %}
+                            <option value="{{ tipo_equipo.id }}" {% if request.GET.filtrar_tipo_equipo == tipo_equipo.id|stringformat:"s" %}selected{% endif %}>
+                                {{ tipo_equipo.nombre_tipo_equipo }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit"><i class="fas fa-filter"></i> Aplicar Filtros</button>
+                    <a href="{% url 'consulta_inventario' %}" class="btn-limpiar"><i class="fas fa-redo"></i> Limpiar Filtros</a>
+                </div>
+            </form>
+        </div>
+
+        <a href="/" class="btn-regresar"><i class="fas fa-arrow-left"></i> Regresar</a>
+        <form method="post" action="{% url 'borrar_todo' %}" style="display: inline;" onsubmit="return confirmarBorrado();">
+            {% csrf_token %}
+            <button type="submit" class="btn-borrar"><i class="fas fa-trash"></i> Borrar Todo</button>
+        </form>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Acciones</th>
+                        <th>Serial</th>
+                        <th>ID Bus</th>
+                        <th>Placa</th>
+                        <th>Tipología</th>
+                        <th>Operador</th>
+                        <th>Proveedor</th>
+                        <th>Tipo ITS</th>
+                        <th>Tipo Equipo</th>
+                        <th>Equipo</th>
+                        <th>Nombre Equipo Generalizado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for equipo in equipos %}
+                        {% for historial in equipo.historialserial_set.all %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'editar_equipo' equipo.id %}">Editar</a> |
+                                    <a href="{% url 'eliminar_equipo' equipo.id %}">Eliminar</a> |
+                                    <a href="javascript:void(0)" onclick="mostrarDetalles({
+                                        serial: '{{ historial.numero_serial }}',
+                                        idbus: '{{ equipo.vehiculo.idbus }}',
+                                        placa: '{{ equipo.vehiculo.placa }}',
+                                        tipologia: '{{ equipo.vehiculo.tipologia.tipobus }}',
+                                        operador: '{{ equipo.vehiculo.operador.nombre_operador }}',
+                                        proveedor: '{{ equipo.vehiculo.operador.proveedor.nombre_proveedor }}',
+                                        tipo_its: '{{ equipo.equipo.tipo_its.nombre_tipo_its }}',
+                                        tipo_equipo: '{{ equipo.equipo.tipo_equipo.nombre_tipo_equipo }}',
+                                        equipo: '{{ equipo.equipo.nombre_equipo }}',
+                                        marca: '{{ equipo.equipo.marca.nombre_marca }}',
+                                        fecha_instalacion: '{{ equipo.fecha_instalacion }}',
+                                        fecha_vinculacion: '{{ equipo.fecha_vinculacion }}',
+                                        fecha_inicio_operacion: '{{ equipo.fecha_inicio_operacion }}',
+                                        fecha_fin_vu: '{{ equipo.fecha_fin_vu }}',
+                                        tiempo_operacion_hoy: '{{ equipo.tiempo_operacion_hoy }}',
+                                        dias_restantes_operacion: '{{ equipo.dias_restantes_operacion }}',
+                                        porcentaje_avance_hoy: '{{ equipo.porcentaje_avance_hoy }}'
+                                    })">Detalle</a>
+                                </td>
+                                <td>{{ historial.numero_serial }}</td>
+                                <td>{{ equipo.vehiculo.idbus }}</td>
+                                <td>{{ equipo.vehiculo.placa }}</td>
+                                <td>{{ equipo.vehiculo.tipologia.tipobus }}</td>
+                                <td>{{ equipo.vehiculo.operador.nombre_operador }}</td>
+                                <td>{{ equipo.vehiculo.operador.proveedor.nombre_proveedor }}</td>
+                                <td>{{ equipo.equipo.tipo_its.nombre_tipo_its }}</td>
+                                <td>{{ equipo.equipo.tipo_equipo.nombre_tipo_equipo }}</td>
+                                <td>{{ equipo.equipo.nombre_equipo }}</td>
+                                <td>{{ equipo.equipo.nombre_equipo_generalizado }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para mostrar detalles -->
+    <div id="myModal" class="modal">
+        <div class="modal-content" id="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+        </div>
+    </div>
+</body>
+</html>

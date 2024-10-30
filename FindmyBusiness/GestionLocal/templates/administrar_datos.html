@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Administración de Datos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome para íconos -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        /* Logo y botón de regresar */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 100px;
+        }
+        .btn-regresar {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-regresar:hover {
+            background-color: #5a6268;
+        }
+        h1 {
+            text-align: center;
+            color: #343a40;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .action-buttons {
+            text-align: right;
+        }
+        .action-buttons button {
+            padding: 10px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .edit-btn {
+            background-color: #6c757d;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .edit-btn i {
+            margin-right: 5px;
+        }
+        .edit-btn:hover {
+            background-color: #5a6268;
+        }
+        .form-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+        }
+        .form-container h2 {
+            margin-bottom: 10px;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container input, select {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .form-container button {
+            padding: 10px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .form-container button i {
+            margin-right: 5px;
+        }
+        .form-container button:hover {
+            background-color: #5a6268;
+        }
+        .form-container .cancel-btn {
+            background-color: #dc3545;
+        }
+        .form-container .cancel-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header con logo y botón regresar -->
+    <!-- Header con logo centrado y botón regresar en la esquina -->
+<div class="header" style="display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 20px;">
+    <!-- Logo centrado -->
+    <img src="{% static 'images/Logo5.png' %}" alt="Logo de la Empresa" style="display: block; margin: 0 auto;">
+</div>
+
+
+    <div class="container">
+        <h1>Administración de Datos</h1>
+
+        <!-- Tabla de datos actuales -->
+        <div class="data-section">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h2>Datos Actuales</h2>
+    
+                <!-- Botones alineados a la derecha -->
+                <div style="display: inline-flex; gap: 10px;">
+                    <!-- Botón Regresar -->
+                    <a href="/" class="btn-regresar" style="background-color: #6c757d; color: white; padding: 8px 12px; text-decoration: none; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px;">
+                        <i class="fas fa-arrow-left"></i> Regresar
+                    </a>
+                    <!-- Botón para desplazarse al final de la página con el mismo estilo -->
+                    <button class="btn-bottom" onclick="scrollToBottom()" style="background-color: #6c757d; color: white; padding: 8px 12px; border-radius: 8px; border: none; display: inline-flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <i class="fas fa-arrow-down"></i> Ir al final
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla de Tipos ITS -->
+            <h3>Tipos ITS</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tipo in tipos_its %}
+                        <tr>
+                            <td>{{ tipo.id }}</td>
+                            <td>{{ tipo.nombre_tipo_its }}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editarTipoITS('{{ tipo.id }}', '{{ tipo.nombre_tipo_its }}')">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Repetir similar para otras tablas (Tipos de Equipos, Marcas, Estados) -->
+
+            <h3>Tipos de Equipos</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tipo in tipos_equipo %}
+                        <tr>
+                            <td>{{ tipo.id }}</td>
+                            <td>{{ tipo.nombre_tipo_equipo }}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editarTipoEquipo('{{ tipo.id }}', '{{ tipo.nombre_tipo_equipo }}')">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3>Marcas</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for marca in marcas %}
+                        <tr>
+                            <td>{{ marca.id }}</td>
+                            <td>{{ marca.nombre_marca }}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editarMarca('{{ marca.id }}', '{{ marca.nombre_marca }}')">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3>Estados</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for estado in estados %}
+                        <tr>
+                            <td>{{ estado.id }}</td>
+                            <td>{{ estado.nombre_estado }}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editarEstado('{{ estado.id }}', '{{ estado.nombre_estado }}')">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Formulario para editar/agregar nuevos registros -->
+        <div class="form-container">
+            <h2 id="form-title">Agregar Nuevo Registro</h2>
+            <!-- Mensaje de error, si existe -->
+            {% if error_message %}
+            <div class="alert alert-danger" style="color: red; margin-bottom: 20px;">
+                {{ error_message }}
+            </div>
+              {% endif %}
+            <form id="formulario-datos" method="POST" action="{% url 'administrar_datos' %}">
+                {% csrf_token %}
+                <input type="hidden" id="tipo_accion" name="tipo_accion" value="agregar">
+                <input type="hidden" id="tipo_id" name="tipo_id">
+
+                <label for="tipo_its">Tipo ITS:</label>
+                <input type="text" id="tipo_its" name="tipo_its" placeholder="Nombre del Tipo ITS">
+
+                <label for="tipo_equipo">Tipo Equipo:</label>
+                <input type="text" id="tipo_equipo" name="tipo_equipo" placeholder="Nombre del Tipo Equipo">
+
+                <label for="marca">Marca:</label>
+                <input type="text" id="marca" name="marca" placeholder="Nombre de la Marca">
+
+                <label for="estado">Estado:</label>
+                <input type="text" id="estado" name="estado" placeholder="Nombre del Estado">
+                <!-- Botón de guardar en azul -->
+                    <button type="submit" class="save-btn" style="background-color: #007bff; color: white;">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+
+                    <!-- Botón de cancelar en gris con funcionalidad para limpiar el formulario -->
+                    <button type="button" class="cancel-btn" style="background-color: #6c757d; color: white;" onclick="cancelarEdicion()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+
+                
+
+            </form>
+        </div>
+    </div>
+    <!-- Botón de regresar e ir al inicio al final de la página centrados -->
+            <div class="btn-bottom-container" style="text-align: center; margin-top: 20px;">
+                <!-- Botón Regresar -->
+                <a href="/" class="btn-regresar" style="display: inline-flex; justify-content: center; align-items: center; margin-right: 10px;">
+                    <i class="fas fa-arrow-left"></i> Regresar
+                </a>
+
+                <!-- Botón Ir al inicio con el mismo estilo -->
+                <button class="btn-regresar" onclick="scrollToTop()" style="display: inline-flex; justify-content: center; align-items: center;">
+                    <i class="fas fa-arrow-up"></i> Ir al inicio
+                </button>
+            </div>
+    <script>
+        // Función para editar un Tipo ITS
+        function editarTipoITS(id, nombre) {
+            document.getElementById('form-title').textContent = 'Editar Tipo ITS';
+            document.getElementById('tipo_its').value = nombre;
+            document.getElementById('tipo_id').value = id;
+            document.getElementById('tipo_accion').value = 'editar_tipo_its';
+        }
+    
+        // Función para editar un Tipo de Equipo
+        function editarTipoEquipo(id, nombre) {
+            document.getElementById('form-title').textContent = 'Editar Tipo de Equipo';
+            document.getElementById('tipo_equipo').value = nombre;
+            document.getElementById('tipo_id').value = id;
+            document.getElementById('tipo_accion').value = 'editar_tipo_equipo';
+        }
+    
+        // Función para editar una Marca
+        function editarMarca(id, nombre) {
+            document.getElementById('form-title').textContent = 'Editar Marca';
+            document.getElementById('marca').value = nombre;
+            document.getElementById('tipo_id').value = id;
+            document.getElementById('tipo_accion').value = 'editar_marca';
+        }
+    
+        // Función para editar un Estado
+        function editarEstado(id, nombre) {
+            document.getElementById('form-title').textContent = 'Editar Estado';
+            document.getElementById('estado').value = nombre;
+            document.getElementById('tipo_id').value = id;
+            document.getElementById('tipo_accion').value = 'editar_estado';
+        }
+    
+        // Función para restablecer el formulario para agregar un nuevo registro
+        function cancelarEdicion() {
+            document.getElementById('form-title').textContent = 'Agregar Nuevo Registro';  // Cambia el título
+            document.getElementById('formulario-datos').reset();  // Restablece todos los campos del formulario
+            document.getElementById('tipo_accion').value = 'agregar';  // Cambia el valor de la acción a 'agregar'
+            document.getElementById('tipo_id').value = '';  // Limpia el campo oculto del ID
+        }
+        // Función para desplazarse al final de la página
+        function scrollToBottom() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+         // Función para desplazarse al inicio de la página
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+    
+</body>
+</html>
